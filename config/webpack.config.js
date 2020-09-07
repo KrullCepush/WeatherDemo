@@ -24,6 +24,11 @@ module.exports = {
   },
   stats: "minimal",
   mode: "development",
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
+  },
 
   plugins: [
     new MiniCssExtractPlugin({

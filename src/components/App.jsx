@@ -1,21 +1,22 @@
 import React from "react";
 import GoogleMapReact from "google-map-react";
-
 //requiers Libery
+
 import { Test } from "@pages/Test";
+import Key from "~/../key";
 //components
 import "~/styles/styles.scss";
 //styles
 
 export function App(props) {
-  const key = "AIzaSyDiwN_yv2iQGNiNOovFH-SqLYmcOCI91pA";
+  const key = Key;
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
       console.log(position);
     },
     (error) => {
-      console.error(error);
+      console.error("ERROR: ", error);
     },
     {
       timeout: 1000,
@@ -26,14 +27,17 @@ export function App(props) {
 
   return (
     <div className="">
-      <div className="f-title">Hello</div>
       <div style={{ height: "100vh", width: "100%" }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key }}
           defaultCenter={props.center}
           defaultZoom={props.zoom}
         >
-          <Test lat={59.955413} lng={30.337844} text="My Marker" />
+          <Test
+            lat={props.center.lat}
+            lng={props.center.lng}
+            text="My Marker"
+          />
         </GoogleMapReact>
       </div>
     </div>
@@ -42,7 +46,7 @@ export function App(props) {
 
 App.defaultProps = {
   center: {
-    lat: 59.95,
+    lat: 57.95,
     lng: 30.33,
   },
   zoom: 11,
