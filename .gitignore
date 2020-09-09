@@ -12,3 +12,4 @@ logs
 .DS_Store
 
 key.js
+firebaseKey.js

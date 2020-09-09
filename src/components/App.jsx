@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
 //requiers Libery
 
@@ -8,12 +8,27 @@ import Key from "~/../key";
 import "~/styles/styles.scss";
 //styles
 
-export function App(props) {
-  const key = Key;
+export function App() {
+  const [positionStore, setPositionStore] = useState({
+    center: {
+      lat: 57.95,
+      lng: 30.33,
+    },
+    zoom: 11,
+    location: false,
+  });
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      console.log(position);
+      setPositionStore({
+        center: {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        },
+        zoom: 11,
+        location: true,
+      });
+      console.log(positionStore);
     },
     (error) => {
       console.error("ERROR: ", error);
@@ -27,27 +42,31 @@ export function App(props) {
 
   return (
     <div className="">
-      <div style={{ height: "100vh", width: "100%" }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key }}
-          defaultCenter={props.center}
-          defaultZoom={props.zoom}
-        >
-          <Test
-            lat={props.center.lat}
-            lng={props.center.lng}
-            text="My Marker"
-          />
-        </GoogleMapReact>
-      </div>
+      {positionStore.location ? (
+        <Geo positionStore={positionStore} />
+      ) : (
+        "Loading"
+      )}
     </div>
   );
 }
 
-App.defaultProps = {
-  center: {
-    lat: 57.95,
-    lng: 30.33,
-  },
-  zoom: 11,
-};
+function Geo({ positionStore }) {
+  const key = Key;
+
+  return (
+    <div style={{ height: "100vh", width: "100%" }}>
+      <GoogleMapReact
+        bootstrapURLKeys={{ key }}
+        defaultCenter={positionStore.center}
+        defaultZoom={positionStore.zoom}
+      >
+        <Test
+          lat={positionStore.center.lat}
+          lng={positionStore.center.lng}
+          text="Marke2r"
+        />
+      </GoogleMapReact>
+    </div>
+  );
+}
