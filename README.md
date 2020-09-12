@@ -1,1 +1,1 @@
-# WeatherDemo
+# WeatherApp

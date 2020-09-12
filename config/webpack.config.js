@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanTerminalPlugin = require("clean-terminal-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+var autoprefixer = require("autoprefixer");
 
 const PATHS = {
   src: path.join(__dirname, "../src"),
@@ -15,7 +16,7 @@ const PATHS = {
 
 module.exports = {
   entry: {
-    app: `${PATHS.src}/index.js`,
+    app: `${PATHS.src}/static/index.js`,
   },
   output: {
     path: PATHS.build,
@@ -26,16 +27,24 @@ module.exports = {
   mode: "development",
   optimization: {
     splitChunks: {
-      chunks: "all",
+      cacheGroups: {
+        vendor: {
+          name: "vendors",
+          test: /node_modules/,
+          chunks: "all",
+          enforce: true,
+        },
+      },
     },
   },
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "styles.css",
+      filename: "[name].[hash].css",
+      chunkFilename: "[id].[hash].css",
     }),
     new HtmlWebpackPlugin({
-      template: `${PATHS.src}/index.html`,
+      template: `${PATHS.src}/static/index.html`,
     }),
     new CleanTerminalPlugin({
       message: `dev server running on http://local:3030`,
@@ -84,14 +93,117 @@ module.exports = {
         loader: "babel-loader",
       },
       {
-        //css
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        //css scoup
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // { loader: "style-loader" },
+
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true,
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+              },
+
+              importLoaders: 1,
+            },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: ["autoprefixer", "cssnano"],
+              },
+            },
+          },
+        ],
+        include: /\.module\.css$/,
       },
+
       {
-        //scss
-        test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        //css global
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // { loader: "style-loader" },
+
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: ["autoprefixer", "cssnano"],
+              },
+            },
+          },
+        ],
+        exclude: /\.module\.css$/,
+      },
+
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true,
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+              },
+              importLoaders: 1,
+            },
+          },
+
+          {
+            loader: "sass-loader",
+            options: { sourceMap: true },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: ["autoprefixer", "cssnano"],
+              },
+            },
+          },
+        ],
+        include: /\.module\.scss$/,
+      },
+
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: "sass-loader",
+            options: { sourceMap: true },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: ["autoprefixer", "cssnano"],
+              },
+            },
+          },
+        ],
+        exclude: /\.module\.scss$/,
       },
     ],
   },

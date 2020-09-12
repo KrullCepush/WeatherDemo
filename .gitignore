@@ -1,6 +1,7 @@
 # dependencies
 /node_modules
 /build
+/.firebase
 
 # IDE
 .idea
@@ -11,5 +12,6 @@ logs
 *.log
 .DS_Store
 
-key.js
+googleKey.js
 firebaseKey.js
+weatherKey.js
