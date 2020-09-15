@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import GoogleMapReact from "google-map-react";
-import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./styles.module.scss";
 
@@ -25,6 +26,7 @@ function FindGeo() {
   });
   const positionStore = useSelector((state) => state.currentPossition);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     setLoading(true);
@@ -73,6 +75,13 @@ function FindGeo() {
     setPositionStatus("reject");
   }
 
+  function redirectTo(position = {}) {
+    if (Object.keys(position).length > 0) {
+      dispatch(save_cords_AC(position));
+    }
+    history.push("/home");
+  }
+
   return (
     <div className={styles.bg}>
       <Container>
@@ -80,9 +89,15 @@ function FindGeo() {
           <Dashboard />
           {loading && <LoadingGeo />}
           {!loading && positionStatus === "accept" && positionStore.id && (
-            <AcceptGeo city={positionStore.name} reject={rejectCity} />
+            <AcceptGeo
+              city={positionStore.name}
+              reject={rejectCity}
+              redirectTo={redirectTo}
+            />
           )}
-          {!loading && positionStatus === "reject" && <SelectGeo />}
+          {!loading && positionStatus === "reject" && (
+            <SelectGeo redirectTo={redirectTo} />
+          )}
         </div>
       </Container>
     </div>

@@ -1,22 +1,15 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./styles.module.scss";
 import List from "./List";
 import listGeo from "~/static/city.list.json";
 
-function SelectGeo() {
+function SelectGeo({ redirectTo }) {
   const [results, setResults] = useState([]);
   const [position, setPosition] = useState(null);
   const [value, setValue] = useState("");
   const [visibleHelp, setVisibleHelp] = useState(null);
-
-  const history = useHistory();
-
-  function redirectTo() {
-    history.push("/home");
-  }
 
   function onChange(e) {
     setValue(e.target.value);
@@ -58,7 +51,11 @@ function SelectGeo() {
       <div className={clsx(!visibleHelp && styles.disable, styles.help)}>
         <List results={results} choose={chooseResult} />
       </div>
-      <button disabled={!position} className="f-button" onClick={redirectTo}>
+      <button
+        disabled={!position}
+        className="f-button"
+        onClick={() => redirectTo(position)}
+      >
         yes
       </button>
     </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.scss";
 
-function AcceptGeo({ city = "", reject }) {
+function AcceptGeo({ city = "", reject, redirectTo }) {
   return (
     <div className={styles.wrap}>
       <div className={styles.title}>
@@ -10,8 +10,12 @@ function AcceptGeo({ city = "", reject }) {
         <div className="f-displayLarge">{city}</div>
       </div>
       <div className={styles.btn}>
-        <Link to="/home"> Yes </Link>
-        <button onClick={() => reject()}>No</button>
+        <button className="f-button" onClick={() => redirectTo()}>
+          Yes
+        </button>
+        <button className="f-button" onClick={() => reject()}>
+          No
+        </button>
       </div>
     </div>
   );

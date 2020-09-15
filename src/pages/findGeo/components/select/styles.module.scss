@@ -24,6 +24,8 @@
     border-radius: 4px;
     height: 32px;
     margin-bottom: 16px;
+    padding: 8px;
+    box-sizing: border-box;
 
     &:focus {
       outline: none;
@@ -56,13 +58,18 @@
   margin: 0 auto;
 
   > ul {
-    max-height: 15vh;
+    max-height: 120px;
     background-color: rgba(255, 255, 255, 0.4);
     overflow-y: auto;
     display: block;
+    border: 2px solid rgba(0, 183, 255, 0.8);
+    box-sizing: border-box;
+    border-radius: 4px;
+
     > li {
       padding: 8px;
-      margin-bottom: 8px;
+      border-bottom: 1px solid gray;
+      box-sizing: border-box;
     }
   }
 }

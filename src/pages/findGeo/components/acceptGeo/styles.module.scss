@@ -16,12 +16,11 @@
     display: flex;
     justify-content: center;
 
-    > a {
+    & button:first-child {
       margin-right: 48px;
     }
 
-    > a,
-    button {
+    > button {
       padding: 12px 32px;
       border: none;
       cursor: pointer;
