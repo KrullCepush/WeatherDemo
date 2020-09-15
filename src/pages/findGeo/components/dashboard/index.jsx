@@ -4,7 +4,7 @@ import styles from "./styles.module.scss";
 function Dashboard() {
   return (
     <div className={styles.dashboard}>
-      <div className="f-displayLarge">Weather APP</div>
+      <h1 className="f-displayLarge">Weather APP</h1>
     </div>
   );
 }

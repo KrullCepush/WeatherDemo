@@ -1,6 +1,9 @@
 .dashboard {
-  > div {
+  padding: 16px 0;
+  > h1 {
     text-align: center;
     color: rgba(140, 219, 255, 0.9);
   }
+
+  margin-bottom: 25%;
 }

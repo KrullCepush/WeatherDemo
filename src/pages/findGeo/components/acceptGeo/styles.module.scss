@@ -1,0 +1,38 @@
+.wrap {
+  & .title {
+    margin-bottom: 32px;
+
+    > div {
+      color: #fff;
+      text-align: center;
+    }
+
+    > div:first-child {
+      margin-bottom: 16px;
+    }
+  }
+
+  & .btn {
+    display: flex;
+    justify-content: center;
+
+    > a {
+      margin-right: 48px;
+    }
+
+    > a,
+    button {
+      padding: 12px 32px;
+      border: none;
+      cursor: pointer;
+      background: #f4b649;
+      border-radius: 4px;
+      display: block;
+      margin-top: 32px;
+
+      &:hover {
+        background: #ffc767;
+      }
+    }
+  }
+}

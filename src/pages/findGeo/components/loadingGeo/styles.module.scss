@@ -1,0 +1,14 @@
+.wrap {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  > div {
+    color: #fff;
+    margin-left: 100px;
+  }
+  > img {
+    width: 100px;
+    height: 100px;
+  }
+}

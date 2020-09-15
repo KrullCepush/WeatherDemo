@@ -1,52 +1,91 @@
 import React, { useState, useEffect } from "react";
 
-import Container from "@components/Container";
-import SelectGeo from "./components/select";
-import Dashboard from "./components/dashboard";
+import GoogleMapReact from "google-map-react";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./styles.module.scss";
 
+import { save_cords_AC } from "~/store/reducers/actions";
+
+import Container from "@components/Container";
+import SelectGeo from "./components/select";
+import Dashboard from "./components/dashboard";
+import LoadingGeo from "./components/loadingGeo";
+import AcceptGeo from "./components/acceptGeo";
+
+import wetherKey from "~/../weatherKey";
+
 function FindGeo() {
-  const [errorGeo, setEroorGeo] = useState(null);
   const [loading, setLoading] = useState(null);
-  const [positionStore, setPositionStore] = useState(null);
-  console.log(errorGeo);
+  const [positionStatus, setPositionStatus] = useState(null);
+  const [geoCoord, setGeoCoord] = useState({
+    lat: null,
+    lng: null,
+    accept: null,
+  });
+  const positionStore = useSelector((state) => state.currentPossition);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setLoading(true);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setPositionStore({
-          center: {
+    if (!positionStore.id) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setGeoCoord({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          },
-          zoom: 10,
-        });
-      },
-      (error) => {
-        setEroorGeo("error");
-        console.log("hi");
-      },
-      {
-        timeout: 1000,
-        maximumAge: 10000,
-        enableHighAccuracy: true,
-      }
-    );
-    setLoading(false);
+            accept: true,
+          });
+          setPositionStatus("accept");
+        },
+        (error) => {
+          setPositionStatus("reject");
+        },
+        {
+          timeout: 1000,
+          maximumAge: 10000,
+          enableHighAccuracy: true,
+        }
+      );
+    }
+
+    setTimeout(() => {
+      setLoading(null);
+    }, 3000);
   }, []);
 
+  useEffect(() => {
+    if (geoCoord.accept) {
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${geoCoord.lat}&lon=${geoCoord.lng}&appid=${wetherKey}`
+      )
+        .then((res) => res.json())
+        .then((res) => dispatch(save_cords_AC(res)))
+        .catch((error) => {
+          console.log(error);
+          setPositionStatus("reject");
+        });
+    }
+  }, [geoCoord.accept]);
+
+  function rejectCity() {
+    setPositionStatus("reject");
+  }
+
   return (
-    <Container>
-      <div className={styles.window}>
-        <div className={styles.bg}>
+    <div className={styles.bg}>
+      <Container>
+        <div className={styles.window}>
           <Dashboard />
-          {errorGeo ? <SelectGeo /> : ""}
+          {loading && <LoadingGeo />}
+          {!loading && positionStatus === "accept" && positionStore.id && (
+            <AcceptGeo city={positionStore.name} reject={rejectCity} />
+          )}
+          {!loading && positionStatus === "reject" && <SelectGeo />}
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }
 

@@ -1,5 +1,8 @@
 .container {
   padding: 0 15px;
+  padding-top: 0.1px;
+  margin-top: 0.1px;
+  min-height: 100%;
 }
 
 @media (min-width: 575.98px) {

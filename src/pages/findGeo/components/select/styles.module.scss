@@ -1,4 +1,72 @@
-.bg {
-  background-color: rgba(0, 0, 0, 0.3);
+.wrap {
   padding: 24px;
+
+  & .title {
+    margin-bottom: 32px;
+
+    > div {
+      color: #fff;
+      text-align: center;
+    }
+
+    > div:first-child {
+      margin-bottom: 16px;
+    }
+  }
+
+  > input {
+    display: block;
+    width: 60%;
+    margin: 0 auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 2px solid rgba(0, 183, 255, 0.8);
+    border-radius: 4px;
+    height: 32px;
+    margin-bottom: 16px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  > button {
+    padding: 12px 32px;
+    border: none;
+    cursor: pointer;
+    background: #f4b649;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 32px;
+
+    &:hover {
+      background: #ffc767;
+    }
+
+    &:disabled {
+      background: rgba(56, 54, 64, 0.2);
+      color: rgba(56, 54, 64, 0.4);
+    }
+  }
+}
+
+.list {
+  width: 60%;
+  margin: 0 auto;
+
+  > ul {
+    max-height: 15vh;
+    background-color: rgba(255, 255, 255, 0.4);
+    overflow-y: auto;
+    display: block;
+    > li {
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.disable {
+  display: none;
 }

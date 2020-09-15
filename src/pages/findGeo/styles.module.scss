@@ -1,12 +1,10 @@
 .window {
-  border: 4px solid transparent;
-  background: linear-gradient(#eceef2, #eceef2) padding-box,
-    linear-gradient(to right, #fb9b42 0%, #8c19d8 20%, #f0a519 80%) border-box;
-  border-radius: 4px;
-  margin-top: 30px;
+  width: 100%;
+  margin-top: 5vh;
 }
 
 .bg {
-  background: url("@assets/img/lg.jpg");
-  padding: 24px;
+  background: url("@assets/img/lg.jpg") no-repeat;
+  background-size: cover;
+  min-height: 100vh;
 }

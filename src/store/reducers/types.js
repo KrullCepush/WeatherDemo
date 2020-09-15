@@ -1,1 +1,1 @@
-export const ex = "";
+export const SET_COORDS = "SET_COORDS";
