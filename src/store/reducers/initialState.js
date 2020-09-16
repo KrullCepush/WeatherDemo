@@ -1,4 +1,5 @@
 export default {
+  error: null,
   currentPossition: {
     coord: {
       lon: 0,

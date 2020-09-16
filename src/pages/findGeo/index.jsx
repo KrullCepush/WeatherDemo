@@ -18,12 +18,14 @@ import wetherKey from "~/../weatherKey";
 
 function FindGeo() {
   const [loading, setLoading] = useState(null);
+  const [errorStatus, setErrorStatus] = useState(null);
   const [positionStatus, setPositionStatus] = useState(null);
   const [geoCoord, setGeoCoord] = useState({
     lat: null,
     lng: null,
     accept: null,
   });
+
   const positionStore = useSelector((state) => state.currentPossition);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -39,22 +41,25 @@ function FindGeo() {
             lng: position.coords.longitude,
             accept: true,
           });
+          setTimeout(() => {
+            setLoading(null);
+          }, 3000);
           setPositionStatus("accept");
         },
         (error) => {
           setPositionStatus("reject");
+          setTimeout(() => {
+            setLoading(null);
+          }, 3000);
+          console.log("ERROR GEOLOCATION: ", error);
         },
         {
-          timeout: 1000,
-          maximumAge: 10000,
-          enableHighAccuracy: true,
+          timeout: 5000,
+          //   maximumAge: 30000,
+          enableHighAccuracy: false,
         }
       );
     }
-
-    setTimeout(() => {
-      setLoading(null);
-    }, 3000);
   }, []);
 
   useEffect(() => {
@@ -65,8 +70,8 @@ function FindGeo() {
         .then((res) => res.json())
         .then((res) => dispatch(save_cords_AC(res)))
         .catch((error) => {
-          console.log(error);
           setPositionStatus("reject");
+          console.log("FETCH ERROR COORD: ", error);
         });
     }
   }, [geoCoord.accept]);
@@ -77,9 +82,21 @@ function FindGeo() {
 
   function redirectTo(position = {}) {
     if (Object.keys(position).length > 0) {
-      dispatch(save_cords_AC(position));
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?id=${position.id}&appid=${wetherKey}`
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          dispatch(save_cords_AC(res));
+          history.push("/home");
+        })
+        .catch((error) => {
+          setErrorStatus(true);
+          console.log("FETCH ERROR ID: ", error);
+        });
+    } else {
+      history.push("/home");
     }
-    history.push("/home");
   }
 
   return (
@@ -88,16 +105,20 @@ function FindGeo() {
         <div className={styles.window}>
           <Dashboard />
           {loading && <LoadingGeo />}
-          {!loading && positionStatus === "accept" && positionStore.id && (
-            <AcceptGeo
-              city={positionStore.name}
-              reject={rejectCity}
-              redirectTo={redirectTo}
-            />
-          )}
-          {!loading && positionStatus === "reject" && (
+          {!errorStatus &&
+            !loading &&
+            positionStatus === "accept" &&
+            positionStore.id && (
+              <AcceptGeo
+                city={positionStore.name}
+                reject={rejectCity}
+                redirectTo={redirectTo}
+              />
+            )}
+          {!errorStatus && !loading && positionStatus === "reject" && (
             <SelectGeo redirectTo={redirectTo} />
           )}
+          {errorStatus && <div> Error </div>}
         </div>
       </Container>
     </div>
