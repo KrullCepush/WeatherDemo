@@ -1,0 +1,15 @@
+.error {
+  text-align: center;
+
+  & div {
+    color: #fff;
+
+    &:first-child {
+      margin-bottom: 24px;
+    }
+
+    &:nth-child(2) {
+      margin-bottom: 16px;
+    }
+  }
+}

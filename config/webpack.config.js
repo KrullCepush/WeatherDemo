@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanTerminalPlugin = require("clean-terminal-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-var autoprefixer = require("autoprefixer");
+const autoprefixer = require("autoprefixer");
 
 const PATHS = {
   src: path.join(__dirname, "../src"),
@@ -55,6 +55,13 @@ module.exports = {
         { from: path.join(PATHS.src, "assets"), to: path.join("..", "build") },
       ],
     }),
+
+    // Moment.js is an extremely popular library that bundles large locale files
+    // by default due to how webpack interprets its code. This is a practical
+    // solution that requires the user to opt into importing specific locales.
+    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+    // You can remove this if you don't use Moment.js:
+    // new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
 
   module: {

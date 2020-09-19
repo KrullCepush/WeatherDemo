@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-import GoogleMapReact from "google-map-react";
-
-import styles from "./styles.module.scss";
 
 import { save_cords_AC } from "~/store/reducers/actions";
 
 import Container from "@components/Container";
-import SelectGeo from "./components/select";
 import Dashboard from "./components/dashboard";
 import LoadingGeo from "./components/loadingGeo";
-import AcceptGeo from "./components/acceptGeo";
+import LoadingComponent from "@components/loading";
+
+const SelectGeo = React.lazy(() => import("./components/select"));
+const AcceptGeo = React.lazy(() => import("./components/acceptGeo"));
+const ErrorComponent = React.lazy(() => import("@components/error"));
+
+import styles from "./styles.module.scss";
 
 import wetherKey from "~/../weatherKey";
 
@@ -30,6 +31,10 @@ function FindGeo() {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  function rejectCity() {
+    setPositionStatus("reject");
+  }
+
   useEffect(() => {
     setLoading(true);
 
@@ -43,19 +48,18 @@ function FindGeo() {
           });
           setTimeout(() => {
             setLoading(null);
-          }, 3000);
+          }, 1600);
           setPositionStatus("accept");
         },
         (error) => {
           setPositionStatus("reject");
           setTimeout(() => {
             setLoading(null);
-          }, 3000);
+          }, 1600);
           console.log("ERROR GEOLOCATION: ", error);
         },
         {
           timeout: 5000,
-          //   maximumAge: 30000,
           enableHighAccuracy: false,
         }
       );
@@ -75,10 +79,6 @@ function FindGeo() {
         });
     }
   }, [geoCoord.accept]);
-
-  function rejectCity() {
-    setPositionStatus("reject");
-  }
 
   function redirectTo(position = {}) {
     if (Object.keys(position).length > 0) {
@@ -105,20 +105,31 @@ function FindGeo() {
         <div className={styles.window}>
           <Dashboard />
           {loading && <LoadingGeo />}
+
           {!errorStatus &&
             !loading &&
             positionStatus === "accept" &&
             positionStore.id && (
-              <AcceptGeo
-                city={positionStore.name}
-                reject={rejectCity}
-                redirectTo={redirectTo}
-              />
+              <Suspense fallback={<LoadingComponent />}>
+                <AcceptGeo
+                  city={positionStore.name}
+                  reject={rejectCity}
+                  redirectTo={redirectTo}
+                />
+              </Suspense>
             )}
+
           {!errorStatus && !loading && positionStatus === "reject" && (
-            <SelectGeo redirectTo={redirectTo} />
+            <Suspense fallback={<LoadingComponent />}>
+              <SelectGeo redirectTo={redirectTo} />
+            </Suspense>
           )}
-          {errorStatus && <div> Error </div>}
+
+          {errorStatus && !loading && (
+            <Suspense fallback={<LoadingComponent />}>
+              <ErrorComponent />
+            </Suspense>
+          )}
         </div>
       </Container>
     </div>
